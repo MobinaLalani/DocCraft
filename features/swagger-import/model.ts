@@ -68,6 +68,8 @@ export type ControllerGroup = {
   id: string;
   name: string;
   tags: string[];
+  /** Individual endpoints added to the group as `controllerTag\u0000endpointIndex`. */
+  endpointKeys?: string[];
 };
 
 export type ImportState =

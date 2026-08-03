@@ -96,6 +96,9 @@ export type EndpointComponent = BaseComponent & {
   auth?: string;
   requestContentType?: string;
   responseContentType?: string;
+  requestExample?: string;
+  responseExample?: string;
+  responseStatus?: number;
   style?: EndpointStyle;
 };
 

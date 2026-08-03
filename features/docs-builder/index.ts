@@ -1,4 +1,5 @@
 export { DocsBuilderDemo } from "@/features/docs-builder/DocsBuilderDemo";
+export { ComponentInspectorDrawer } from "@/features/docs-builder/ui/ComponentInspectorDrawer";
 export {
   docsBuilderReducer,
   getBuilderSelectors,

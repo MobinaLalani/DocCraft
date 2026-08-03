@@ -127,6 +127,9 @@ export function createComponent(type: PageComponentType): PageComponent {
       auth: "Bearer token",
       requestContentType: "application/json",
       responseContentType: "application/json",
+      requestExample: '{\n  "name": "Sara Ahmadi",\n  "email": "sara@example.com",\n  "active": true\n}',
+      responseExample: '{\n  "id": 42,\n  "name": "Sara Ahmadi",\n  "email": "sara@example.com",\n  "active": true\n}',
+      responseStatus: 200,
     };
   }
 
