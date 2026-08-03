@@ -18,19 +18,18 @@ export function SidebarPageItem({
   href,
   onClick,
 }: SidebarPageItemProps) {
-  const className = isExpanded
-    ? `group relative flex w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-xl px-3 py-2.5 text-right text-sm transition-all duration-150 ${
-        isActive
-          ? "bg-white text-slate-950 shadow-sm"
-          : "text-white/70 hover:bg-white/8 hover:text-white"
-      }`
-    : `flex h-10 w-10 mx-auto items-center justify-center overflow-hidden rounded-xl text-sm font-semibold transition-all duration-150 ${
-        isActive
-          ? "bg-white text-slate-950 shadow-sm"
-          : "bg-white/8 text-white/70 hover:bg-white/15 hover:text-white"
-      }`;
+  // وقتی سایدبار بسته است، هیچ آیتمی نمایش داده نشود
+  if (!isExpanded) {
+    return null;
+  }
 
-  const content = isExpanded ? (
+  const className = `group relative flex w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-xl px-3 py-2.5 text-right text-sm transition-all duration-150 ${
+    isActive
+      ? "bg-white text-slate-950 shadow-sm"
+      : "text-white/70 hover:bg-white/8 hover:text-white"
+  }`;
+
+  const content = (
     <>
       {/* Active indicator dot */}
       <span
@@ -46,8 +45,6 @@ export function SidebarPageItem({
         {title}
       </span>
     </>
-  ) : (
-    <span>{initial}</span>
   );
 
   if (href) {

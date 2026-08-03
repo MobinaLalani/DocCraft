@@ -13,10 +13,9 @@ import type {
   OpenApiOperation,
   OpenApiParameter,
   OpenApiSchema,
-  OpenApiSpec,
   ParsedController,
 } from "./model";
-
+import {OpenApiSpec} from './components/model/index'
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }

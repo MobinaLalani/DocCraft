@@ -29,6 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="fa"
+      suppressHydrationWarning
       dir="rtl"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >

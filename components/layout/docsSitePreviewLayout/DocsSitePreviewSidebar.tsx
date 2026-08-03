@@ -57,9 +57,9 @@ export function DocsSitePreviewSidebar({
           </div>
         ) : (
           <div className="flex justify-center">
-            <span className="rounded-2xl bg-white/10 px-3 py-2 text-xs text-slate-300">
+            {/* <span className="rounded-2xl bg-white/10 px-3 py-2 text-xs text-slate-300">
               M
-            </span>
+            </span> */}
           </div>
         )}
       </div>
@@ -103,12 +103,7 @@ export function DocsSitePreviewSidebar({
                 </div>
               ) : (
                 <div className="mb-1 flex justify-center">
-                  <span
-                    title={group.title}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-xs font-bold text-white/60"
-                  >
-                    {group.title.slice(0, 1)}
-                  </span>
+                
                 </div>
               )}
 

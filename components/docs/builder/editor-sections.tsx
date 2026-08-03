@@ -4,7 +4,7 @@ import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { NewMenuSection } from "@/components/docs/builder/create-page/NewMenuSection";
 import { CollapsiblePanel } from "@/components/ui/CollapsiblePanel";
 import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
-import { PageRenderer } from "@/features/page-renderer";
+import { PageRenderer } from "@/features/docs-builder/components/renderer/PageRenderer";
 import {
   componentTransferKey,
   getBlockLabel,

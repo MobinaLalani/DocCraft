@@ -1,7 +1,10 @@
+import { ParsedEndpoint } from "./components/model";
 export type OpenApiTag = {
   name: string;
   description?: string;
 };
+
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
 export type OpenApiParameter = {
   name: string;
@@ -37,23 +40,23 @@ export type OpenApiOperation = {
   >;
 };
 
-export type OpenApiSpec = {
-  openapi?: string;
-  swagger?: string;
-  info?: { title?: string; description?: string; version?: string };
-  tags?: OpenApiTag[];
-  paths?: Record<string, Record<string, OpenApiOperation>>;
-  components?: {
-    schemas?: Record<string, OpenApiSchema>;
-  };
-};
+// export type OpenApiSpec = {
+//   openapi?: string;
+//   swagger?: string;
+//   info?: { title?: string; description?: string; version?: string };
+//   tags?: OpenApiTag[];
+//   paths?: Record<string, Record<string, OpenApiOperation>>;
+//   components?: {
+//     schemas?: Record<string, OpenApiSchema>;
+//   };
+// };
 
-export type ParsedEndpoint = {
-  method: string;
-  path: string;
-  summary?: string;
-  selected: boolean;
-};
+// export type ParsedEndpoint = {
+//   method: string;
+//   path: string;
+//   summary?: string;
+//   selected: boolean;
+// };
 
 export type ParsedController = {
   tag: string;
@@ -63,15 +66,12 @@ export type ParsedController = {
   selected: boolean;
   endpoints: ParsedEndpoint[];
 };
-
-export type ControllerGroup = {
+export interface ControllerGroup {
   id: string;
   name: string;
   tags: string[];
-  /** Individual endpoints added to the group as `controllerTag\u0000endpointIndex`. */
   endpointKeys?: string[];
-};
-
+}
 export type ImportState =
   | "idle"
   | "loading"

@@ -8,7 +8,7 @@ import {
   writeStoredMenuGroups,
 } from "@/lib/docs/storage";
 import { requireRole } from "@/lib/auth/server";
-import type { OpenApiSpec } from "@/features/swagger-import/model";
+import type { OpenApiSpec } from "@/features/swagger-import/components/model/index";
 
 export async function fetchOpenApiAction(
   url: string,

@@ -9,9 +9,9 @@ import {
 import { getDocsRoadmap } from "./model/getDocsRoadmap";
 import { getFooterSections } from "./model/getFooterSections";
 import { getPageNavigation } from "./model/getPageNavigation";
-import { DocsRoadmap } from "./ui/DocsRoadmap";
-import { PageNavigation } from "./ui/PageNavigation";
-import { PageRenderer } from "../page-renderer";
+import { DocsRoadmap } from "./components/ui/DocsRoadmap";
+import { PageNavigation } from "./components/ui/PageNavigation";
+import { PageRenderer } from "@/features/docs-builder/components/renderer/PageRenderer";
 import type { AuthSession } from "@/lib/auth/types";
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";

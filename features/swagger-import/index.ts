@@ -1,1 +1,1 @@
-export { SwaggerImportWizard } from "./components/SwaggerImportWizard";
+export { SwaggerImportWizard } from "./SwaggerImportWizard";

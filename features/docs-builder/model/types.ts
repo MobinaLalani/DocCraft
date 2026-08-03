@@ -7,11 +7,12 @@ import type { DocsWorkspace, MenuGroup } from "@/lib/docs/workspace";
 
 export type BuilderView =
   | "editor"
-  | "create-page"
-  | "menus"
-  | "blocks"
   | "preview"
-  | "json";
+  | "menus"
+  | "create-page"
+  | "json"
+  | "components-setting"
+  | "import-swagger";
 
 export type PageEditorScope = "active" | "create";
 

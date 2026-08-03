@@ -71,7 +71,7 @@ export function ComponentsSettingSidebar() {
           isOpen ? "space-y-1 px-3 py-4" : "space-y-2 px-2 py-4"
         }`}
       >
-        {adminNavItems.map((item) => {
+        {/* {adminNavItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
@@ -112,7 +112,7 @@ export function ComponentsSettingSidebar() {
               )}
             </Link>
           );
-        })}
+        })} */}
       </nav>
     </Sidebar>
   );
