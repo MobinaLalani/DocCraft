@@ -42,6 +42,7 @@ type SelectStepProps = {
   onDeleteGroup: (id: string) => void;
   onRemoveFromGroup: (groupId: string, tag: string) => void;
   onRemoveEndpointFromGroup: (groupId: string, key: string) => void;
+  onAddControllerToGroup: (groupId: string, tag: string) => void;
   onDropIntoGroup: (
     groupId: string,
     item: { type: "controller"; tag: string } | { type: "endpoint"; tag: string; endpointIndex: number },
@@ -73,6 +74,7 @@ export function SelectStep({
   onDeleteGroup,
   onRemoveFromGroup,
   onRemoveEndpointFromGroup,
+  onAddControllerToGroup,
   onDropIntoGroup,
   onUpdateGroupName,
   onToggleGroupExpand,
@@ -122,6 +124,7 @@ export function SelectStep({
         onDeleteGroup={onDeleteGroup}
         onRemoveFromGroup={onRemoveFromGroup}
         onRemoveEndpointFromGroup={onRemoveEndpointFromGroup}
+        onAddControllerToGroup={onAddControllerToGroup}
         dragItem={dragItem}
         onDropIntoGroup={(groupId) => {
           if (dragItem) onDropIntoGroup(groupId, dragItem);

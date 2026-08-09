@@ -19,6 +19,7 @@ type GroupSectionProps = {
 
   onRemoveFromGroup: (groupId: string, tag: string) => void;
   onRemoveEndpointFromGroup: (groupId: string, key: string) => void;
+  onAddControllerToGroup: (groupId: string, tag: string) => void;
   dragItem: unknown;
   onDropIntoGroup: (groupId: string) => void;
 };
@@ -32,6 +33,7 @@ export function GroupSection({
   onUpdateGroupName,
   onRemoveFromGroup,
   onRemoveEndpointFromGroup,
+  onAddControllerToGroup,
   dragItem,
   onDropIntoGroup,
 }: GroupSectionProps) {
@@ -53,6 +55,7 @@ export function GroupSection({
             onRename={(name) => onUpdateGroupName(group.id, name)}
             onRemoveController={(tag) => onRemoveFromGroup(group.id, tag)}
             onRemoveEndpoint={(key) => onRemoveEndpointFromGroup(group.id, key)}
+            onAddController={(tag) => onAddControllerToGroup(group.id, tag)}
             onDrop={() => onDropIntoGroup(group.id)}
             canDrop={Boolean(dragItem)}
           />

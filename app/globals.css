@@ -26,7 +26,6 @@
   display: none;
 }
 
-
 * {
   box-sizing: border-box;
     scrollbar-width: none;
@@ -35,7 +34,7 @@
 
 @font-face {
     font-family: 'YekanBakh';
-    src: url('../assets/fonts/YekanBakhFaNum-Regular.ttf') format('truetype');
+    src: url('../assets/fonts/YekanBakh-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

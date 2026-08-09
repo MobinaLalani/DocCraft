@@ -107,6 +107,10 @@ export function useGroupActions({
     );
   }
 
+  function addController(groupId: string, tag: string) {
+    dropIntoGroup(groupId, { type: "controller", tag });
+  }
+
   function dropIntoGroup(
     groupId: string,
     item: { type: "controller"; tag: string } | { type: "endpoint"; tag: string; endpointIndex: number },
@@ -129,7 +133,9 @@ export function useGroupActions({
         .map((group) => ({
           ...group,
           endpointKeys: group.id === groupId
-            ? [...(group.endpointKeys ?? []).filter((entry) => entry !== key), key]
+            ? group.tags.includes(item.tag)
+              ? (group.endpointKeys ?? []).filter((entry) => entry !== key)
+              : [...(group.endpointKeys ?? []).filter((entry) => entry !== key), key]
             : (group.endpointKeys ?? []).filter((entry) => entry !== key),
         }))
         .filter((group) => group.tags.length + (group.endpointKeys?.length ?? 0) > 0);
@@ -159,6 +165,7 @@ export function useGroupActions({
 
     removeController,
     removeEndpoint,
+    addController,
     dropIntoGroup,
 
     toggleExpand,

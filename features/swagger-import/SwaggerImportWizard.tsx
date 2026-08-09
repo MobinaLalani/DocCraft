@@ -9,9 +9,12 @@ import {
   Code2,
   FileText,
   Globe,
+  GripVertical,
   Layers,
   Loader2,
   Search,
+  Pencil,
+  Plus,
   Trash2,
   XCircle,
   Zap,
@@ -176,6 +179,12 @@ export function SwaggerImportWizard() {
   const [search,      setSearch]      = useState("");
   const [expanded,       setExpanded]       = useState<Set<string>>(new Set());
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [editingGroups, setEditingGroups] = useState<Set<string>>(new Set());
+  const [dragItem, setDragItem] = useState<
+    | { type: "controller"; tag: string }
+    | { type: "endpoint"; tag: string; endpointIndex: number }
+    | null
+  >(null);
 
   // ── Group creation
   const [creatingGroup, setCreatingGroup] = useState(false);
@@ -306,6 +315,87 @@ export function SwaggerImportWizard() {
     );
   }
 
+  function toggleGroupEditing(id: string) {
+    setEditingGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+    setExpandedGroups((prev) => new Set(prev).add(id));
+  }
+
+  function addControllerToGroup(groupId: string, tag: string) {
+    setGroups((prev) =>
+      prev.map((group) => ({
+        ...group,
+        tags:
+          group.id === groupId
+            ? [...group.tags.filter((item) => item !== tag), tag]
+            : group.tags.filter((item) => item !== tag),
+        endpointKeys: (group.endpointKeys ?? []).filter(
+          (key) => !key.startsWith(`${tag}\u0000`),
+        ),
+      })),
+    );
+  }
+
+  function dropIntoGroup(groupId: string) {
+    if (!dragItem) return;
+    if (dragItem.type === "controller") {
+      addControllerToGroup(groupId, dragItem.tag);
+    } else {
+      const key = `${dragItem.tag}\u0000${dragItem.endpointIndex}`;
+      setGroups((prev) =>
+        prev.map((group) => ({
+          ...group,
+          endpointKeys:
+            group.id === groupId && !group.tags.includes(dragItem.tag)
+              ? [...(group.endpointKeys ?? []).filter((item) => item !== key), key]
+              : (group.endpointKeys ?? []).filter((item) => item !== key),
+        })),
+      );
+    }
+    setExpandedGroups((prev) => new Set(prev).add(groupId));
+    setDragItem(null);
+  }
+
+  function removeEndpointFromGroup(groupId: string, key: string) {
+    setGroups((prev) =>
+      prev.map((group) =>
+        group.id === groupId
+          ? {
+              ...group,
+              endpointKeys: (group.endpointKeys ?? []).filter(
+                (item) => item !== key,
+              ),
+            }
+          : group,
+      ),
+    );
+  }
+
+  function handleDragAutoScroll(event: React.DragEvent<HTMLDivElement>) {
+    if (!dragItem) return;
+
+    const edgeSize = Math.min(160, window.innerHeight * 0.2);
+    const maxSpeed = 28;
+    let scrollAmount = 0;
+
+    if (event.clientY < edgeSize) {
+      scrollAmount = -maxSpeed * (1 - event.clientY / edgeSize);
+    } else if (event.clientY > window.innerHeight - edgeSize) {
+      scrollAmount =
+        maxSpeed *
+        (1 - (window.innerHeight - event.clientY) / edgeSize);
+    }
+
+    if (scrollAmount !== 0) {
+      event.preventDefault();
+      window.scrollBy({ top: scrollAmount, behavior: "instant" });
+    }
+  }
+
   function confirmCreateGroup() {
     if (!newGroupName.trim() || newGroupTags.size < 2) return;
     setGroups((prev) => [...prev, { id: uid(), name: newGroupName.trim(), tags: Array.from(newGroupTags) }]);
@@ -339,7 +429,10 @@ export function SwaggerImportWizard() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-5">
+    <div
+      className="space-y-5"
+      onDragOver={handleDragAutoScroll}
+    >
 
       {/* ── Header ── */}
       <div className="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-8">
@@ -620,14 +713,32 @@ export function SwaggerImportWizard() {
                 <div className="divide-y divide-slate-100">
                   {groups.map((group) => {
                     const isExp   = expandedGroups.has(group.id);
+                    const isEditing = editingGroups.has(group.id);
                     const members = controllers.filter((c) => group.tags.includes(c.tag));
+                    const individualEndpoints = controllers.flatMap((controller) =>
+                      controller.endpoints.flatMap((endpoint, endpointIndex) => {
+                        const key = `${controller.tag}\u0000${endpointIndex}`;
+                        return group.endpointKeys?.includes(key)
+                          ? [{ controller, endpoint, key }]
+                          : [];
+                      }),
+                    );
                     const epCount = members.reduce(
                       (s, c) => s + c.endpoints.filter((e) => e.selected).length, 0,
                     );
                     const totalEp = members.reduce((s, c) => s + c.endpointCount, 0);
                     return (
                       <div key={group.id}>
-                        <div className="flex items-center gap-3 bg-(--darkBlue)/3 px-5 py-3.5 transition hover:bg-(--darkBlue)/6">
+                        <div
+                          onDragOver={(event) => {
+                            if (dragItem) event.preventDefault();
+                          }}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            dropIntoGroup(group.id);
+                          }}
+                          className={`flex items-center gap-3 px-5 py-3.5 transition ${dragItem ? "bg-sky-50 ring-2 ring-inset ring-sky-400" : "bg-(--darkBlue)/3 hover:bg-(--darkBlue)/6"}`}
+                        >
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-(--darkBlue)/15">
                             <Layers className="h-4 w-4 text-(--darkBlue)" />
                           </div>
@@ -644,6 +755,14 @@ export function SwaggerImportWizard() {
                             <span className="rounded-full bg-(--lightBlue)/10 px-3 py-1 text-xs font-semibold text-(--lightBlue)">
                               {epCount}/{totalEp} API
                             </span>
+                            <button
+                              type="button"
+                              onClick={() => toggleGroupEditing(group.id)}
+                              title={isEditing ? "پایان ویرایش" : "ویرایش گروه‌بندی"}
+                              className={`rounded-xl p-1.5 transition ${isEditing ? "bg-sky-100 text-sky-700" : "text-slate-400 hover:bg-sky-50 hover:text-sky-600"}`}
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </button>
                             <button
                               type="button"
                               onClick={() => deleteGroup(group.id)}
@@ -664,6 +783,27 @@ export function SwaggerImportWizard() {
 
                         {isExp && (
                           <div className="bg-slate-50/60">
+                            {isEditing && (
+                              <div className="border-t border-sky-100 bg-sky-50/70 px-8 py-4">
+                                <p className="text-sm font-semibold text-slate-700">افزودن سرگروه</p>
+                                <p className="mb-3 mt-1 text-xs text-slate-500">
+                                  یک Controller را انتخاب کنید یا API تکی را روی گروه رها کنید.
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  {ungroupedControllers.map((controller) => (
+                                    <button
+                                      key={controller.tag}
+                                      type="button"
+                                      onClick={() => addControllerToGroup(group.id, controller.tag)}
+                                      className="inline-flex items-center gap-1.5 rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-sky-500 hover:text-sky-700"
+                                    >
+                                      <Plus className="h-3.5 w-3.5" />
+                                      {controller.customName || controller.tag}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                             {members.map((c) => (
                               <div key={c.tag} className="flex items-center gap-3 border-t border-slate-100 px-14 py-3">
                                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-200">
@@ -678,6 +818,18 @@ export function SwaggerImportWizard() {
                                   onClick={() => removeFromGroup(group.id, c.tag)}
                                   className="rounded-xl px-2 py-1 text-xs text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
                                 >
+                                  حذف از گروه
+                                </button>
+                              </div>
+                            ))}
+                            {individualEndpoints.map(({ controller, endpoint, key }) => (
+                              <div key={key} className="flex items-center gap-3 border-t border-slate-100 px-14 py-3">
+                                <span className={`rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${METHOD_STYLES[endpoint.method] ?? "bg-slate-100 text-slate-600 border-slate-200"}`}>
+                                  {endpoint.method}
+                                </span>
+                                <code className="min-w-0 flex-1 truncate text-xs text-slate-600" dir="ltr">{endpoint.path}</code>
+                                <span className="text-xs text-slate-400">{controller.customName}</span>
+                                <button type="button" onClick={() => removeEndpointFromGroup(group.id, key)} className="text-xs text-rose-500">
                                   حذف از گروه
                                 </button>
                               </div>
@@ -720,6 +872,18 @@ export function SwaggerImportWizard() {
                   <div key={controller.tag}>
                     {/* Controller row */}
                     <div className="flex items-center gap-3 px-5 py-3.5 transition hover:bg-slate-50">
+                      <span
+                        draggable
+                        onDragStart={(event) => {
+                          setDragItem({ type: "controller", tag: controller.tag });
+                          event.dataTransfer.effectAllowed = "move";
+                        }}
+                        onDragEnd={() => setDragItem(null)}
+                        className="cursor-grab text-slate-300 active:cursor-grabbing"
+                        title="کشیدن Controller به گروه"
+                      >
+                        <GripVertical className="h-4 w-4" />
+                      </span>
                       <IndeterminateCheckbox
                         checked={controller.selected}
                         indeterminate={indeterminate}
@@ -786,6 +950,20 @@ export function SwaggerImportWizard() {
                             key={`${ep.method}-${ep.path}-${i}`}
                             className="flex cursor-pointer items-center gap-3 px-9 py-2.5 transition hover:bg-slate-100"
                           >
+                            <span
+                              draggable
+                              onDragStart={(event) => {
+                                setDragItem({ type: "endpoint", tag: controller.tag, endpointIndex: i });
+                                event.dataTransfer.effectAllowed = "move";
+                                event.dataTransfer.setData("text/plain", `${ep.method} ${ep.path}`);
+                              }}
+                              onDragEnd={() => setDragItem(null)}
+                              onClick={(event) => event.preventDefault()}
+                              className="cursor-grab text-slate-300 active:cursor-grabbing"
+                              title="کشیدن API به گروه"
+                            >
+                              <GripVertical className="h-3.5 w-3.5" />
+                            </span>
                             <IndeterminateCheckbox
                               checked={ep.selected}
                               indeterminate={false}
