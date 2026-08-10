@@ -58,6 +58,7 @@ export function PageSettingsSection({
 
         <Field label="Slug">
           
+          
           <input
             className={inputClass}
             value={activePage.slug}
