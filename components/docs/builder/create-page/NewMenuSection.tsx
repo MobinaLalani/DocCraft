@@ -123,12 +123,12 @@ export function NewMenuSection({
   };
 
   return (
-    <div className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-5">
+    <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-5">
       <div className="space-y-6">
         <div className="space-y-4">
           <Field label="عنوان منو">
             <input
-              className={`${inputClass} w-full min-w-0 ${
+              className={`${inputClass} w-full min-w-0 !rounded-xl ${
                 isMenuTitleEmpty ? "border-rose-300 focus:border-rose-400" : ""
               }`}
               value={createMenuTitle}
@@ -144,7 +144,7 @@ export function NewMenuSection({
 
           <Field label="توضیح منو">
             <textarea
-              className={`${inputClass} w-full min-w-0 min-h-24 resize-y`}
+              className={`${inputClass} min-h-24 w-full min-w-0 resize-y !rounded-xl`}
               value={createMenuDescription}
               onChange={(event) => onSetNewMenuDescription(event.target.value)}
               placeholder="توضیح کوتاه درباره این گروه منو"
@@ -153,7 +153,7 @@ export function NewMenuSection({
 
           <Field label="وضعیت نمایش در منو">
             <select
-              className={`${inputClass} w-full min-w-0`}
+              className={`${inputClass} w-full min-w-0 !rounded-xl`}
               value={createMenuIsActive ? "active" : "inactive"}
               onChange={(event) =>
                 onSetNewMenuActive(event.target.value === "active")
@@ -166,7 +166,7 @@ export function NewMenuSection({
         </div>
 
         <div className="border-t border-slate-200 pt-6">
-          <div className="flex flex-col gap-3 rounded-3xl bg-sky-50 p-5">
+          <div className="flex flex-col gap-3 rounded-xl bg-sky-50 p-5">
             <div>
               <p className="text-sm font-medium text-sky-700">
                 {editingMenuId ? "ویرایش منو" : "ایجاد منوی جدید"}
@@ -186,7 +186,7 @@ export function NewMenuSection({
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSaving || isMenuTitleEmpty}
-                className="rounded-2xl bg-sky-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+                className="rounded-xl bg-sky-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
               >
                 {isSaving
                   ? "در حال ذخیره..."
@@ -199,7 +199,7 @@ export function NewMenuSection({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400"
+                  className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400"
                 >
                   انصراف از ویرایش
                 </button>
@@ -219,7 +219,7 @@ export function NewMenuSection({
           </div>
 
           {menuGroups.length > 0 ? (
-            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-slate-200 text-sm">
                   <thead className=" text-slate-700">
@@ -258,7 +258,7 @@ export function NewMenuSection({
                           </td>
                           <td className="px-4 py-4">
                             <span
-                              className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+                              className={`inline-flex rounded-xl px-3 py-1 text-xs font-medium ${
                                 menuGroup.isActive
                                   ? "bg-emerald-100 text-emerald-700"
                                   : "bg-slate-200 text-slate-700"
@@ -275,14 +275,14 @@ export function NewMenuSection({
                               <button
                                 type="button"
                                 onClick={() => handleEditMenu(menuGroup)}
-                                className="rounded-2xl bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100"
+                                className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100"
                               >
                                 ویرایش
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleDeleteMenu(menuGroup)}
-                                className="rounded-2xl bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-100"
+                                className="rounded-xl bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-100"
                               >
                                 حذف
                               </button>
@@ -296,7 +296,7 @@ export function NewMenuSection({
               </div>
             </div>
           ) : (
-            <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-5 text-sm text-slate-500">
+            <div className="rounded-xl border border-dashed border-slate-200 bg-white p-5 text-sm text-slate-500">
               هنوز هیچ منویی تعریف نشده است.
             </div>
           )}
@@ -305,7 +305,7 @@ export function NewMenuSection({
 
       {blockedDeleteMenu ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
             <div className="space-y-3 text-right">
               <p className="text-sm font-medium text-rose-600">
                 امکان حذف وجود ندارد
@@ -325,7 +325,7 @@ export function NewMenuSection({
               <button
                 type="button"
                 onClick={() => setBlockedDeleteMenu(null)}
-                className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
               >
                 متوجه شدم
               </button>

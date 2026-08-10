@@ -3,6 +3,7 @@ import type {
   EndpointComponent,
   FieldGroupComponent,
   HeadingComponent,
+  ImageComponent,
   NoteComponent,
   PageComponent,
   ParagraphComponent,
@@ -24,3 +25,4 @@ export type EndpointInspectorProps = InspectorProps<EndpointComponent>;
 export type FieldGroupInspectorProps = InspectorProps<FieldGroupComponent>;
 export type TableInspectorProps = InspectorProps<TableComponent>;
 export type CodeInspectorProps = InspectorProps<CodeComponent>;
+export type ImageInspectorProps = InspectorProps<ImageComponent>;

@@ -132,6 +132,18 @@ export type CodeCapabilityConfig = BlockCapabilityConfig<
   { readOnly: boolean; showCopyButton: boolean; showLineNumbers: boolean }
 >;
 
+export type ImageCapabilityConfig = BlockCapabilityConfig<
+  { src: boolean; alt: boolean; caption: boolean },
+  {
+    width: boolean;
+    height: boolean;
+    borderWidth: boolean;
+    borderColor: boolean;
+    borderRadius: boolean;
+  },
+  { readOnly: boolean }
+>;
+
 // --- Registry ---
 
 export type BlockCapabilityRegistry = {
@@ -142,6 +154,7 @@ export type BlockCapabilityRegistry = {
   "field-group": FieldGroupCapabilityConfig;
   table: TableCapabilityConfig;
   code: CodeCapabilityConfig;
+  image: ImageCapabilityConfig;
 };
 
 // --- Default configs ---
@@ -256,6 +269,18 @@ export const defaultCodeCapabilities: CodeCapabilityConfig = {
   behavior: { readOnly: false, showCopyButton: true, showLineNumbers: false },
 };
 
+export const defaultImageCapabilities: ImageCapabilityConfig = {
+  properties: { src: true, alt: true, caption: true },
+  style: {
+    width: true,
+    height: true,
+    borderWidth: true,
+    borderColor: true,
+    borderRadius: true,
+  },
+  behavior: { readOnly: false },
+};
+
 export const defaultBlockCapabilities: BlockCapabilityRegistry = {
   heading: defaultHeadingCapabilities,
   note: defaultNoteCapabilities,
@@ -264,6 +289,7 @@ export const defaultBlockCapabilities: BlockCapabilityRegistry = {
   "field-group": defaultFieldGroupCapabilities,
   table: defaultTableCapabilities,
   code: defaultCodeCapabilities,
+  image: defaultImageCapabilities,
 };
 
 // --- Resolver ---

@@ -1,12 +1,9 @@
 "use client";
 
-import { BlockPicker } from "@/components/docs/builder/block-picker";
-import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
+import { BuilderToolsColumn } from "@/components/docs/builder/shared/BuilderToolsColumn";
 import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
 
 import { CanvasSection } from "../sections/CanvasSection";
-import { MenuManagementSection } from "../sections/MenuManagementSection";
-
 import { CollapsiblePanel } from "@/components/ui/CollapsiblePanel";
 
 import { useDocsBuilderContext } from "@/features/docs-builder/context/DocsBuilderContext";
@@ -85,29 +82,16 @@ export function CreatePageView() {
             onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
             onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
             onSetNewPageDescription={actions.setNewPageDescription}
-          />
-        </CollapsiblePanel>
-
-        {/* مدیریت منو */}
-
-        <CollapsiblePanel
-          subtitle="اختیاری"
-          title="تعریف منوی جدید"
-          defaultOpen={false}
-        >
-          <MenuManagementSection
-            menuGroups={state.workspace.menuGroups}
-            pages={state.workspace.pages}
-            createMenuTitle={state.createMenuForm.title}
-            createMenuDescription={state.createMenuForm.description}
-            createMenuIsActive={state.createMenuForm.isActive}
-            onSetNewMenuTitle={actions.setNewMenuTitle}
-            onSetNewMenuDescription={actions.setNewMenuDescription}
-            onSetNewMenuActive={actions.setNewMenuActive}
-            onCreateMenu={actions.handleCreateMenu}
-            onSaveMenuGroupChanges={actions.saveMenuGroupChanges}
-            onDeleteMenuGroup={actions.deleteMenuGroup}
-            onResetMenuForm={actions.resetMenuForm}
+            quickCreateMenu={{
+              title: state.createMenuForm.title,
+              description: state.createMenuForm.description,
+              isActive: state.createMenuForm.isActive,
+              onTitleChange: actions.setNewMenuTitle,
+              onDescriptionChange: actions.setNewMenuDescription,
+              onActiveChange: actions.setNewMenuActive,
+              onCreate: actions.handleCreateMenu,
+              onReset: actions.resetMenuForm,
+            }}
           />
         </CollapsiblePanel>
 
@@ -115,63 +99,17 @@ export function CreatePageView() {
 
         <div
           className="
-          flex
+          flex flex-col xl:flex-row
           gap-6
         "
         >
           {/* ابزارها */}
 
-          <div
-            className="
-            w-80
-            space-y-6
-          "
-          >
-            <section
-              className="
-              rounded-3xl
-              border
-              bg-white
-              p-5
-            "
-            >
-              <h4
-                className="
-                text-xl
-                font-semibold
-              "
-              >
-                کامپوننت‌ها
-              </h4>
-
-              <BlockPicker onAddBlock={actions.addBlockToNewPage} />
-            </section>
-
-            <section
-              className="
-              rounded-3xl
-              border
-              bg-white
-              p-5
-            "
-            >
-              <h4
-                className="
-                text-xl
-                font-semibold
-              "
-              >
-                ویرایش کامپوننت
-              </h4>
-
-              <InspectorPanel
-                selectedComponent={state.selectedCreateComponent}
-                onUpdateSelectedComponent={
-                  actions.updateSelectedCreateComponent
-                }
-              />
-            </section>
-          </div>
+          <BuilderToolsColumn
+            selectedComponent={state.selectedCreateComponent}
+            onAddBlock={actions.addBlockToNewPage}
+            onUpdateSelectedComponent={actions.updateSelectedCreateComponent}
+          />
 
           {/* Canvas */}
 
@@ -214,6 +152,7 @@ export function CreatePageView() {
           </button>
         </div>
       </div>
+
     </section>
   );
 }

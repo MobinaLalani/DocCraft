@@ -1,10 +1,10 @@
 "use client";
 
 import { useDocsBuilderContext } from "@/features/docs-builder/context/DocsBuilderContext";
+import { BuilderToolsColumn } from "@/components/docs/builder/shared/BuilderToolsColumn";
 
 import { PageSettingsSection } from "../sections/PageSettingsSection";
 import { CanvasSection } from "../sections/CanvasSection";
-import { InspectorSection } from "../sections/InspectorSection";
 
 export function EditorView() {
   const { state, actions } = useDocsBuilderContext();
@@ -22,21 +22,35 @@ export function EditorView() {
         menuGroups={state.workspace.menuGroups}
         onUpdatePage={actions.updateActivePage}
         onUpdatePageSlug={actions.updateActivePageSlug}
+        quickCreateMenu={{
+          title: state.createMenuForm.title,
+          description: state.createMenuForm.description,
+          isActive: state.createMenuForm.isActive,
+          onTitleChange: actions.setNewMenuTitle,
+          onDescriptionChange: actions.setNewMenuDescription,
+          onActiveChange: actions.setNewMenuActive,
+          onCreate: actions.handleCreateMenu,
+          onReset: actions.resetMenuForm,
+        }}
       />
 
-      <CanvasSection
-        activePage={page}
-        selectedComponentId={state.selectedComponentId}
-        onSelectComponent={actions.setSelectedComponentId}
-        onDropAt={actions.handleDropAt}
-        onDuplicateComponent={actions.duplicateComponentInActivePage}
-        onRemoveComponent={actions.removeComponent}
-      />
-
-      <InspectorSection
-        selectedComponent={state.selectedComponent}
-        onUpdateSelectedComponent={actions.updateSelectedComponent}
-      />
+      <div className="flex flex-col gap-6 xl:flex-row">
+        <BuilderToolsColumn
+          selectedComponent={state.selectedComponent}
+          onAddBlock={actions.addBlockToActivePage}
+          onUpdateSelectedComponent={actions.updateSelectedComponent}
+        />
+        <div className="min-w-0 flex-1">
+          <CanvasSection
+            activePage={page}
+            selectedComponentId={state.selectedComponentId}
+            onSelectComponent={actions.setSelectedComponentId}
+            onDropAt={actions.handleDropAt}
+            onDuplicateComponent={actions.duplicateComponentInActivePage}
+            onRemoveComponent={actions.removeComponent}
+          />
+        </div>
+      </div>
 
       <button
         type="button"
@@ -51,6 +65,7 @@ export function EditorView() {
       >
         ذخیره تغییرات
       </button>
+
     </div>
   );
 }

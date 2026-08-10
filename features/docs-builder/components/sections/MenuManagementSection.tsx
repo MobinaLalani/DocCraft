@@ -58,7 +58,7 @@ export function MenuManagementSection({
   return (
     <section
       className="
-      rounded-3xl
+      rounded-xl
       border
       border-slate-200
       bg-white

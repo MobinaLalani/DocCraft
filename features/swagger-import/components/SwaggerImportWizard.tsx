@@ -114,6 +114,7 @@ const importer = useImportActions({
           onDeleteGroup={group.deleteGroup}
           onRemoveFromGroup={group.removeController}
           onRemoveEndpointFromGroup={group.removeEndpoint}
+          onAddControllerToGroup={group.addController}
           onDropIntoGroup={group.dropIntoGroup}
           onUpdateGroupName={group.renameGroup}
           onToggleGroupExpand={group.toggleExpand}

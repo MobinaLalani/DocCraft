@@ -1,6 +1,10 @@
 import { Field, inputClass } from "@/components/docs/builder/shared";
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
+import {
+  MenuGroupSelect,
+  type QuickMenuFormProps,
+} from "@/components/docs/builder/shared/MenuGroupSelect";
 
 type NewPageDetailsSectionProps = {
   menuGroups: MenuGroup[];
@@ -10,6 +14,7 @@ type NewPageDetailsSectionProps = {
   onSetNewPageMenuTitle: (value: string) => void;
   onSetNewPageMenuGroupId: (value: string) => void;
   onSetNewPageDescription: (value: string) => void;
+  quickCreateMenu?: QuickMenuFormProps;
 };
 
 export function NewPageDetailsSection({
@@ -20,6 +25,7 @@ export function NewPageDetailsSection({
   onSetNewPageMenuTitle,
   onSetNewPageMenuGroupId,
   onSetNewPageDescription,
+  quickCreateMenu,
 }: NewPageDetailsSectionProps) {
   return (
     <div className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-3">
@@ -43,20 +49,12 @@ export function NewPageDetailsSection({
             />
           </Field>
 
-          <Field label="گروه منو">
-            <select
-              className={`${inputClass} w-full min-w-0`}
-              value={draftPage.menuGroupId}
-              onChange={(event) => onSetNewPageMenuGroupId(event.target.value)}
-            >
-              {menuGroups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.title}
-                  {group.isActive ? "" : " (غیرفعال)"}
-                </option>
-              ))}
-            </select>
-          </Field>
+          <MenuGroupSelect
+            menuGroups={menuGroups}
+            value={draftPage.menuGroupId}
+            onChange={onSetNewPageMenuGroupId}
+            quickCreate={quickCreateMenu}
+          />
 
           <Field label="عنوان در منو">
             <input

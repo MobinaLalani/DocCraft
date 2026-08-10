@@ -5,7 +5,8 @@ export type PageComponentType =
   | "endpoint"
   | "field-group"
   | "table"
-  | "code";
+  | "code"
+  | "image";
 
 export type HeadingLevel = 1 | 2 | 3;
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -102,6 +103,12 @@ export type EndpointComponent = BaseComponent & {
   style?: EndpointStyle;
 };
 
+export type ImageStyle = {
+  borderWidth?: number;
+  borderColor?: string;
+  borderRadius?: number;
+};
+
 export type ApiField = {
   id: string;
   name: string;
@@ -141,6 +148,16 @@ export type CodeComponent = BaseComponent & {
   style?: CodeStyle;
 };
 
+export type ImageComponent = BaseComponent & {
+  type: "image";
+  src: string;
+  alt: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  style?: ImageStyle;
+};
+
 export type PageComponent =
   | HeadingComponent
   | NoteComponent
@@ -148,7 +165,8 @@ export type PageComponent =
   | EndpointComponent
   | FieldGroupComponent
   | TableComponent
-  | CodeComponent;
+  | CodeComponent
+  | ImageComponent;
 
 export type DocPage = {
   id: number;

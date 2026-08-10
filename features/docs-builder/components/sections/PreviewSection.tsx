@@ -1,14 +1,9 @@
 "use client";
 
-import { useState } from "react";
-
-import { BlockPicker } from "@/components/docs/builder/block-picker";
-
 import { DocsSitePreview } from "@/features/docs-preview";
 
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
-import type { PageComponentType } from "@/lib/docs/schema";
 
 type PreviewSectionProps = {
   menuGroups: MenuGroup[];
@@ -23,7 +18,6 @@ type PreviewSectionProps = {
 
   onEditPage: () => void;
 
-  onAddBlock: (type: PageComponentType) => void;
 };
 
 export function PreviewSection({
@@ -34,10 +28,7 @@ export function PreviewSection({
   onSelectPage,
   onCreatePage,
   onEditPage,
-  onAddBlock,
 }: PreviewSectionProps) {
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-
   return (
     <section className="space-y-4">
       <div
@@ -70,38 +61,7 @@ text-white
             ویرایش صفحه
           </button>
 
-          <button
-            type="button"
-            onClick={() => setIsPickerOpen((value) => !value)}
-            className="
-rounded-2xl
-border
-px-4
-py-2
-text-sm
-"
-          >
-            افزودن بلاک
-          </button>
         </div>
-
-        {isPickerOpen && (
-          <div
-            className="
-mt-4
-border-t
-pt-4
-"
-          >
-            <BlockPicker
-              onAddBlock={(type) => {
-                onAddBlock(type);
-
-                setIsPickerOpen(false);
-              }}
-            />
-          </div>
-        )}
       </div>
 
       <DocsSitePreview

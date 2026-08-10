@@ -15,7 +15,6 @@ export function PreviewView() {
       onSelectPage={actions.selectPage}
       onCreatePage={() => actions.setActiveView("create-page")}
       onEditPage={() => actions.setActiveView("editor")}
-      onAddBlock={actions.addBlockToActivePage}
     />
   );
 }
