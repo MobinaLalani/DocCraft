@@ -1,18 +1,25 @@
 "use client";
 
+import { useState } from "react";
+
 import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
+import { QuickCreateMenuModal } from "@/components/docs/builder/create-page/QuickCreateMenuModal";
 
 import { CanvasSection } from "../sections/CanvasSection";
-import { MenuManagementSection } from "../sections/MenuManagementSection";
-
 import { CollapsiblePanel } from "@/components/ui/CollapsiblePanel";
 
 import { useDocsBuilderContext } from "@/features/docs-builder/context/DocsBuilderContext";
 
 export function CreatePageView() {
   const { state, actions } = useDocsBuilderContext();
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
+
+  const closeMenuModal = () => {
+    actions.resetMenuForm();
+    setIsMenuModalOpen(false);
+  };
 
   return (
     <section
@@ -85,29 +92,7 @@ export function CreatePageView() {
             onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
             onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
             onSetNewPageDescription={actions.setNewPageDescription}
-          />
-        </CollapsiblePanel>
-
-        {/* مدیریت منو */}
-
-        <CollapsiblePanel
-          subtitle="اختیاری"
-          title="تعریف منوی جدید"
-          defaultOpen={false}
-        >
-          <MenuManagementSection
-            menuGroups={state.workspace.menuGroups}
-            pages={state.workspace.pages}
-            createMenuTitle={state.createMenuForm.title}
-            createMenuDescription={state.createMenuForm.description}
-            createMenuIsActive={state.createMenuForm.isActive}
-            onSetNewMenuTitle={actions.setNewMenuTitle}
-            onSetNewMenuDescription={actions.setNewMenuDescription}
-            onSetNewMenuActive={actions.setNewMenuActive}
-            onCreateMenu={actions.handleCreateMenu}
-            onSaveMenuGroupChanges={actions.saveMenuGroupChanges}
-            onDeleteMenuGroup={actions.deleteMenuGroup}
-            onResetMenuForm={actions.resetMenuForm}
+            onAddMenuClick={() => setIsMenuModalOpen(true)}
           />
         </CollapsiblePanel>
 
@@ -214,6 +199,19 @@ export function CreatePageView() {
           </button>
         </div>
       </div>
+
+      {isMenuModalOpen ? (
+        <QuickCreateMenuModal
+          title={state.createMenuForm.title}
+          description={state.createMenuForm.description}
+          isActive={state.createMenuForm.isActive}
+          onTitleChange={actions.setNewMenuTitle}
+          onDescriptionChange={actions.setNewMenuDescription}
+          onActiveChange={actions.setNewMenuActive}
+          onCreate={actions.handleCreateMenu}
+          onClose={closeMenuModal}
+        />
+      ) : null}
     </section>
   );
 }
