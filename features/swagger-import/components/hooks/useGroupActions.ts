@@ -33,7 +33,8 @@ export function useGroupActions({
     setNewGroupTags((prev) => {
       const next = new Set(prev);
 
-      next.has(tag) ? next.delete(tag) : next.add(tag);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
 
       return next;
     });
@@ -90,15 +91,58 @@ export function useGroupActions({
               }
             : group,
         )
-        .filter((group) => group.tags.length > 0),
+        .filter((group) => group.tags.length + (group.endpointKeys?.length ?? 0) > 0),
     );
+  }
+
+  function removeEndpoint(groupId: string, key: string) {
+    setGroups((prev) =>
+      prev
+        .map((group) =>
+          group.id === groupId
+            ? { ...group, endpointKeys: (group.endpointKeys ?? []).filter((item) => item !== key) }
+            : group,
+        )
+        .filter((group) => group.tags.length + (group.endpointKeys?.length ?? 0) > 0),
+    );
+  }
+
+  function dropIntoGroup(
+    groupId: string,
+    item: { type: "controller"; tag: string } | { type: "endpoint"; tag: string; endpointIndex: number },
+  ) {
+    setGroups((prev) => {
+      if (item.type === "controller") {
+        return prev
+          .map((group) => ({
+            ...group,
+            tags: group.id === groupId
+              ? [...group.tags.filter((tag) => tag !== item.tag), item.tag]
+              : group.tags.filter((tag) => tag !== item.tag),
+            endpointKeys: (group.endpointKeys ?? []).filter((key) => !key.startsWith(`${item.tag}\u0000`)),
+          }))
+          .filter((group) => group.tags.length + (group.endpointKeys?.length ?? 0) > 0);
+      }
+
+      const key = `${item.tag}\u0000${item.endpointIndex}`;
+      return prev
+        .map((group) => ({
+          ...group,
+          endpointKeys: group.id === groupId
+            ? [...(group.endpointKeys ?? []).filter((entry) => entry !== key), key]
+            : (group.endpointKeys ?? []).filter((entry) => entry !== key),
+        }))
+        .filter((group) => group.tags.length + (group.endpointKeys?.length ?? 0) > 0);
+    });
+    setExpandedGroups((prev) => new Set(prev).add(groupId));
   }
 
   function toggleExpand(id: string) {
     setExpandedGroups((prev) => {
       const next = new Set(prev);
 
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
 
       return next;
     });
@@ -114,6 +158,8 @@ export function useGroupActions({
     renameGroup,
 
     removeController,
+    removeEndpoint,
+    dropIntoGroup,
 
     toggleExpand,
   };

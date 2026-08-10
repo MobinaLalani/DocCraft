@@ -115,6 +115,7 @@ export interface ControllerGroup {
    * tag های controller هایی که داخل گروه هستند
    */
   tags: string[];
+  endpointKeys?: string[];
 }
 
 // ─────────────────────────────

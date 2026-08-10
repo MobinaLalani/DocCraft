@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
-import type { DocsRoadmapItem } from "../model/getDocsRoadmap";
+import type { DocsRoadmapItem } from "../../model/getDocsRoadmap";
 
 type DocsRoadmapProps = {
   items: DocsRoadmapItem[];

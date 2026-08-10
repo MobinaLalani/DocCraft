@@ -70,6 +70,7 @@ export interface ControllerGroup {
   id: string;
   name: string;
   tags: string[];
+  endpointKeys?: string[];
 }
 export type ImportState =
   | "idle"

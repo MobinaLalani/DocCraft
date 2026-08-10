@@ -165,9 +165,19 @@ export function generateDocsFromSpec(
 
   // Process groups first — merge multiple controllers into one page
   const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
+  const groupedEndpointKeys = new Set(groups.flatMap((g) => g.endpointKeys ?? []));
 
   groups.forEach((group) => {
-    const members = controllers.filter((c) => group.tags.includes(c.tag));
+    const members = controllers.flatMap((controller) => {
+      if (group.tags.includes(controller.tag)) return [controller];
+
+      const endpoints = controller.endpoints.filter((_, endpointIndex) =>
+        group.endpointKeys?.includes(`${controller.tag}\u0000${endpointIndex}`),
+      );
+      return endpoints.length > 0
+        ? [{ ...controller, endpoints, endpointCount: endpoints.length, selected: true }]
+        : [];
+    });
     if (members.length === 0) return;
 
     const displayName = group.name.trim() || group.id;
@@ -199,7 +209,16 @@ export function generateDocsFromSpec(
   });
 
   // Process ungrouped controllers
-  const ungrouped = controllers.filter((c) => !groupedTagSet.has(c.tag));
+  const ungrouped = controllers.flatMap((controller) => {
+    if (groupedTagSet.has(controller.tag)) return [];
+
+    const endpoints = controller.endpoints.filter(
+      (_, endpointIndex) => !groupedEndpointKeys.has(`${controller.tag}\u0000${endpointIndex}`),
+    );
+    return endpoints.some((endpoint) => endpoint.selected)
+      ? [{ ...controller, endpoints, endpointCount: endpoints.length, selected: true }]
+      : [];
+  });
 
   ungrouped.forEach((controller) => {
     const displayName = controller.customName.trim() || controller.tag;

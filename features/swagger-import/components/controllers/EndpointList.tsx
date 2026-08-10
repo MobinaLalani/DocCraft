@@ -10,12 +10,16 @@ type Props = {
   onToggleEndpoint: (tag: string, index: number) => void;
 
   onSelectAllEndpoints: (tag: string, checked: boolean) => void;
+  onDragEndpoint: (index: number) => void;
+  onDragEnd: () => void;
 };
 
 export function EndpointList({
   controller,
   onToggleEndpoint,
   onSelectAllEndpoints,
+  onDragEndpoint,
+  onDragEnd,
 }: Props) {
   return (
     <div className="bg-slate-50">
@@ -34,6 +38,8 @@ export function EndpointList({
           key={`${endpoint.method}-${endpoint.path}`}
           endpoint={endpoint}
           onToggle={() => onToggleEndpoint(controller.tag, index)}
+          onDragStart={() => onDragEndpoint(index)}
+          onDragEnd={onDragEnd}
         />
       ))}
     </div>

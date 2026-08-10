@@ -18,6 +18,9 @@ type GroupSectionProps = {
   onUpdateGroupName: (id: string, name: string) => void;
 
   onRemoveFromGroup: (groupId: string, tag: string) => void;
+  onRemoveEndpointFromGroup: (groupId: string, key: string) => void;
+  dragItem: unknown;
+  onDropIntoGroup: (groupId: string) => void;
 };
 
 export function GroupSection({
@@ -28,6 +31,9 @@ export function GroupSection({
   onDeleteGroup,
   onUpdateGroupName,
   onRemoveFromGroup,
+  onRemoveEndpointFromGroup,
+  dragItem,
+  onDropIntoGroup,
 }: GroupSectionProps) {
   if (groups.length === 0) {
     return null;
@@ -36,20 +42,19 @@ export function GroupSection({
   return (
     <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
       {groups.map((group) => {
-        const groupControllers = controllers.filter((controller) =>
-          group.tags.includes(controller.tag),
-        );
-
         return (
           <GroupItem
             key={group.id}
             group={group}
-            controllers={groupControllers}
+            controllers={controllers}
             expanded={expandedGroups.has(group.id)}
             onToggle={() => onToggleGroupExpand(group.id)}
             onDelete={() => onDeleteGroup(group.id)}
             onRename={(name) => onUpdateGroupName(group.id, name)}
             onRemoveController={(tag) => onRemoveFromGroup(group.id, tag)}
+            onRemoveEndpoint={(key) => onRemoveEndpointFromGroup(group.id, key)}
+            onDrop={() => onDropIntoGroup(group.id)}
+            canDrop={Boolean(dragItem)}
           />
         );
       })}

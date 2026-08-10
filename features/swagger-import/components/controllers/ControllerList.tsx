@@ -15,6 +15,9 @@ type ControllerListProps = {
 
   onSelectAllEndpoints: (tag: string, checked: boolean) => void;
   onUpdateControllerName: (tag: string, name: string) => void;
+  onDragController: (tag: string) => void;
+  onDragEndpoint: (tag: string, endpointIndex: number) => void;
+  onDragEnd: () => void;
 };
 
 export function ControllerList({
@@ -25,6 +28,9 @@ export function ControllerList({
   onToggleEndpoint,
   onSelectAllEndpoints,
   onUpdateControllerName,
+  onDragController,
+  onDragEndpoint,
+  onDragEnd,
 }: ControllerListProps) {
   if (controllers.length === 0) {
     return (
@@ -44,6 +50,9 @@ export function ControllerList({
           onToggleEndpoint={onToggleEndpoint}
           onSelectAllEndpoints={onSelectAllEndpoints}
           onUpdateName={onUpdateControllerName}
+          onDragController={() => onDragController(controller.tag)}
+          onDragEndpoint={(index) => onDragEndpoint(controller.tag, index)}
+          onDragEnd={onDragEnd}
         />
       ))}
     </div>

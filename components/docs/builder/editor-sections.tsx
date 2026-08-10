@@ -10,9 +10,9 @@ import {
   getBlockLabel,
   getBlockMeta,
 } from "@/components/docs/builder/constants";
-import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 import { Field, inputClass } from "@/components/docs/builder/shared";
 import { DocsSitePreview } from "@/features/docs-preview";
+import { ComponentInspectorDrawer } from "@/features/docs-builder/ui/ComponentInspectorDrawer";
 import type { BuilderView } from "@/features/docs-builder/model";
 import type { DocPage, PageComponent } from "@/lib/docs/schema";
 import type { PageComponentType } from "@/lib/docs/schema";
@@ -57,6 +57,7 @@ export function PageSettingsSection({
         </Field>
 
         <Field label="Slug">
+          
           <input
             className={inputClass}
             value={activePage.slug}
@@ -207,7 +208,7 @@ export function CanvasSection({
               }}
               className={`rounded-3xl border p-5 text-right shadow-sm transition ${
                 selectedComponentId === component.id
-                  ? "border-slate-950 bg-slate-950 text-white"
+                  ? "border-sky-500 bg-sky-50 text-slate-950 ring-4 ring-sky-100"
                   : "border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white"
               }`}
             >
@@ -217,7 +218,7 @@ export function CanvasSection({
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
                         selectedComponentId === component.id
-                          ? "bg-white/10 text-slate-200"
+                          ? "bg-sky-600 text-white"
                           : "bg-slate-200 text-slate-700"
                       }`}
                     >
@@ -226,7 +227,7 @@ export function CanvasSection({
                     <span
                       className={`text-xs ${
                         selectedComponentId === component.id
-                          ? "text-slate-300"
+                          ? "text-sky-700"
                           : "text-slate-500"
                       }`}
                     >
@@ -247,7 +248,7 @@ export function CanvasSection({
                     }}
                     className={`rounded-full px-4 py-2 text-sm font-medium ${
                       selectedComponentId === component.id
-                        ? "bg-emerald-500/20 text-emerald-100"
+                        ? "bg-sky-600 text-white"
                         : "bg-emerald-50 text-emerald-700"
                     }`}
                   >
@@ -261,7 +262,7 @@ export function CanvasSection({
                     }}
                     className={`rounded-full px-4 py-2 text-sm font-medium ${
                       selectedComponentId === component.id
-                        ? "bg-white/10 text-white"
+                        ? "bg-white text-slate-700 shadow-sm"
                         : "bg-white text-slate-700"
                     }`}
                   >
@@ -275,7 +276,7 @@ export function CanvasSection({
                     }}
                     className={`rounded-full px-4 py-2 text-sm font-medium ${
                       selectedComponentId === component.id
-                        ? "bg-rose-500/20 text-rose-100"
+                        ? "bg-white text-rose-600 shadow-sm"
                         : "bg-rose-50 text-rose-700"
                     }`}
                   >
@@ -333,7 +334,7 @@ type CreatePageViewProps = {
   onBackToEditor: () => void;
   onAddBlock: (type: PageComponentType) => void;
   onDropAt: (event: DragEvent<HTMLDivElement>, targetIndex: number) => void;
-  onSelectComponent: (componentId: string) => void;
+  onSelectComponent: (componentId: string | null) => void;
   onDuplicateComponent: (component: PageComponent) => void;
   onRemoveComponent: (componentId: string) => void;
   onUpdateSelectedComponent: (
@@ -371,6 +372,13 @@ export function CreatePageView({
   onRemoveComponent,
   onUpdateSelectedComponent,
 }: CreatePageViewProps) {
+  const [isInspectorOpen, setIsInspectorOpen] = useState(false);
+
+  const openInspector = (componentId: string) => {
+    onSelectComponent(componentId);
+    setIsInspectorOpen(true);
+  };
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -445,8 +453,8 @@ export function CreatePageView({
             </CollapsiblePanel>
           </div>
         </div>
-        <div className="flex gap-6">
-          <div className="flex w-87.5 flex-col gap-6">
+        <div className="grid items-start gap-6 xl:grid-cols-[350px_minmax(0,1fr)]">
+          <div className="flex flex-col gap-6">
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-slate-500">
@@ -469,35 +477,28 @@ export function CreatePageView({
               </div>
             </div>
 
-            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-slate-500">بازرس</p>
-                <h4 className="text-xl font-semibold text-slate-950">
-                  ویرایش کامپوننت انتخاب شده
-                </h4>
-                <p className="text-sm leading-6 text-slate-600">
-                  روی هر بلوک داخل بوم کلیک کن تا تنظیماتش همینجا باز شود.
-                </p>
-              </div>
-
-              <InspectorPanel
-                selectedComponent={selectedComponent}
-                onUpdateSelectedComponent={onUpdateSelectedComponent}
-              />
-            </section>
           </div>
 
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0">
             <CanvasSection
               activePage={draftPage}
               selectedComponentId={selectedComponentId}
-              onSelectComponent={onSelectComponent}
+              onSelectComponent={(componentId) => onSelectComponent(componentId)}
               onDropAt={onDropAt}
               onDuplicateComponent={onDuplicateComponent}
               onRemoveComponent={onRemoveComponent}
+              onEditComponent={openInspector}
+              description="برای تغییر محتوا و تنظیمات، روی دکمه ویرایش کامپوننت بزن."
             />
           </div>
         </div>
+
+        <ComponentInspectorDrawer
+          isOpen={isInspectorOpen}
+          selectedComponent={selectedComponent}
+          onClose={() => setIsInspectorOpen(false)}
+          onUpdateSelectedComponent={onUpdateSelectedComponent}
+        />
 
         <div className="border-t border-slate-200 pt-6">
           <div className="flex flex-col gap-3 rounded-3xl bg-emerald-50 p-5 lg:flex-row lg:items-center lg:justify-between">
@@ -662,7 +663,7 @@ type EditorWorkspaceProps = {
   saveMessage: string | null;
   onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
   onUpdatePageSlug: (value: string) => void;
-  onSelectComponent: (componentId: string) => void;
+  onSelectComponent: (componentId: string | null) => void;
   onDropAt: (event: DragEvent<HTMLDivElement>, targetIndex: number) => void;
   onDuplicateComponent: (component: PageComponent) => void;
   onRemoveComponent: (componentId: string) => void;
@@ -692,6 +693,12 @@ function EditorWorkspace({
   onUpdateSelectedComponent,
 }: EditorWorkspaceProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isInspectorOpen, setIsInspectorOpen] = useState(false);
+
+  const openInspector = (componentId: string) => {
+    onSelectComponent(componentId);
+    setIsInspectorOpen(true);
+  };
 
   return (
     <>
@@ -732,37 +739,29 @@ function EditorWorkspace({
         ) : null}
       </section>
 
-      <CanvasSection
-        activePage={activePage}
-        selectedComponentId={selectedComponentId}
-        onSelectComponent={onSelectComponent}
-        onDropAt={onDropAt}
-        onDuplicateComponent={onDuplicateComponent}
-        onRemoveComponent={onRemoveComponent}
-        onEditComponent={(componentId) => {
-          onSelectComponent(componentId);
-        }}
-        title="کامپوننت های این صفحه"
-        description="روی ویرایش هر کامپوننت بزن تا دیتای همان بخش را پایین صفحه تغییر بدهی."
-      />
-
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-500">ویرایش کامپوننت</p>
-          <h3 className="text-xl font-semibold text-slate-950">
-            دیتای کامپوننت انتخاب شده
-          </h3>
-          <p className="text-sm leading-6 text-slate-600">
-            اگر جدول انتخاب شده باشد، ستون ها و ردیف هایش را همینجا می‌توانی
-            تغییر بدهی.
-          </p>
-        </div>
-
-        <InspectorPanel
-          selectedComponent={selectedComponent}
-          onUpdateSelectedComponent={onUpdateSelectedComponent}
+      <div>
+        <CanvasSection
+          activePage={activePage}
+          selectedComponentId={selectedComponentId}
+          onSelectComponent={(componentId) => onSelectComponent(componentId)}
+          onDropAt={onDropAt}
+          onDuplicateComponent={onDuplicateComponent}
+          onRemoveComponent={onRemoveComponent}
+          onEditComponent={openInspector}
+          title="کامپوننت‌های این صفحه"
+          description="برای تغییر محتوا و تنظیمات، روی دکمه ویرایش کامپوننت بزن."
         />
-      </section>
+      </div>
+
+      <ComponentInspectorDrawer
+        isOpen={isInspectorOpen}
+        selectedComponent={selectedComponent}
+        hasUnsavedChanges={hasUnsavedChanges}
+        isSaving={isSaving}
+        onClose={() => setIsInspectorOpen(false)}
+        onSave={onSavePage}
+        onUpdateSelectedComponent={onUpdateSelectedComponent}
+      />
 
       <div className="border-t border-slate-200 pt-6">
         <div className="flex flex-col gap-3 rounded-3xl bg-sky-50 p-5 lg:flex-row lg:items-center lg:justify-between">
@@ -832,7 +831,7 @@ type BuilderCenterPanelProps = {
   jsonOutput: string;
   onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
   onUpdatePageSlug: (value: string) => void;
-  onSelectComponent: (componentId: string) => void;
+  onSelectComponent: (componentId: string | null) => void;
   onDropAt: (event: DragEvent<HTMLDivElement>, targetIndex: number) => void;
   onDuplicateComponent: (component: PageComponent) => void;
   onRemoveComponent: (componentId: string) => void;
@@ -864,7 +863,7 @@ type BuilderCenterPanelProps = {
     targetIndex: number,
   ) => void;
   onAddBlockToNewPage: (type: PageComponentType) => void;
-  onSelectCreateComponent: (componentId: string) => void;
+  onSelectCreateComponent: (componentId: string | null) => void;
   onDuplicateCreateComponent: (component: PageComponent) => void;
   onRemoveCreateComponent: (componentId: string) => void;
   onUpdateSelectedCreateComponent: (

@@ -1,1 +1,1 @@
-export { PageRenderer }      from "@/components/page-renderer/PageRenderer";
+export { PageRenderer } from "@/features/docs-builder/components/renderer/PageRenderer";

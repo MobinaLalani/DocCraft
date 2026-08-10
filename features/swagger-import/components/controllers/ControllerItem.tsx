@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, GripVertical } from "lucide-react";
 
 import type { ParsedController } from "../model/index";
 
@@ -21,6 +21,9 @@ type Props = {
   onSelectAllEndpoints: (tag: string, checked: boolean) => void;
 
   onUpdateName: (tag: string, value: string) => void;
+  onDragController: () => void;
+  onDragEndpoint: (index: number) => void;
+  onDragEnd: () => void;
 };
 
 export function ControllerItem({
@@ -31,6 +34,9 @@ export function ControllerItem({
   onToggleEndpoint,
   onSelectAllEndpoints,
   onUpdateName,
+  onDragController,
+  onDragEndpoint,
+  onDragEnd,
 }: Props) {
   const selectedEndpoints = controller.endpoints.filter(
     (item) => item.selected,
@@ -41,6 +47,19 @@ export function ControllerItem({
   return (
     <div>
       <div className="flex items-center gap-3 px-5 py-3">
+        <span
+          draggable
+          onDragStart={(event) => {
+            onDragController();
+            event.dataTransfer.effectAllowed = "move";
+            event.dataTransfer.setData("text/plain", controller.tag);
+          }}
+          onDragEnd={onDragEnd}
+          className="cursor-grab text-slate-400 active:cursor-grabbing"
+          title="کشیدن Controller به گروه"
+        >
+          <GripVertical className="h-4 w-4" />
+        </span>
         <IndeterminateCheckbox
           checked={controller.selected}
           indeterminate={indeterminate}
@@ -69,6 +88,8 @@ export function ControllerItem({
           controller={controller}
           onToggleEndpoint={onToggleEndpoint}
           onSelectAllEndpoints={onSelectAllEndpoints}
+          onDragEndpoint={onDragEndpoint}
+          onDragEnd={onDragEnd}
         />
       )}
     </div>

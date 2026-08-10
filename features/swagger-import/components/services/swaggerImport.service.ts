@@ -4,11 +4,7 @@ import {
 } from "@/app/actions/swagger-import";
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
-import type {
-  OpenApiSpec,
-  ControllerGroup,
-  ParsedController,
-} from "../model";
+import type { OpenApiSpec } from "../model";
 
 
 export async function fetchSwaggerSpec(

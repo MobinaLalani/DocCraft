@@ -113,9 +113,11 @@ const importer = useImportActions({
           onConfirmCreateGroup={group.createGroup}
           onDeleteGroup={group.deleteGroup}
           onRemoveFromGroup={group.removeController}
+          onRemoveEndpointFromGroup={group.removeEndpoint}
+          onDropIntoGroup={group.dropIntoGroup}
           onUpdateGroupName={group.renameGroup}
           onToggleGroupExpand={group.toggleExpand}
-          onImport={() => {}}
+          onImport={importer.importDocs}
         />
       )}
 
