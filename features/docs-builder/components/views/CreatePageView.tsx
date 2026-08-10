@@ -1,11 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
 import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
-import { QuickCreateMenuModal } from "@/components/docs/builder/create-page/QuickCreateMenuModal";
 
 import { CanvasSection } from "../sections/CanvasSection";
 import { CollapsiblePanel } from "@/components/ui/CollapsiblePanel";
@@ -14,12 +11,6 @@ import { useDocsBuilderContext } from "@/features/docs-builder/context/DocsBuild
 
 export function CreatePageView() {
   const { state, actions } = useDocsBuilderContext();
-  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
-
-  const closeMenuModal = () => {
-    actions.resetMenuForm();
-    setIsMenuModalOpen(false);
-  };
 
   return (
     <section
@@ -92,7 +83,16 @@ export function CreatePageView() {
             onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
             onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
             onSetNewPageDescription={actions.setNewPageDescription}
-            onAddMenuClick={() => setIsMenuModalOpen(true)}
+            quickCreateMenu={{
+              title: state.createMenuForm.title,
+              description: state.createMenuForm.description,
+              isActive: state.createMenuForm.isActive,
+              onTitleChange: actions.setNewMenuTitle,
+              onDescriptionChange: actions.setNewMenuDescription,
+              onActiveChange: actions.setNewMenuActive,
+              onCreate: actions.handleCreateMenu,
+              onReset: actions.resetMenuForm,
+            }}
           />
         </CollapsiblePanel>
 
@@ -200,18 +200,6 @@ export function CreatePageView() {
         </div>
       </div>
 
-      {isMenuModalOpen ? (
-        <QuickCreateMenuModal
-          title={state.createMenuForm.title}
-          description={state.createMenuForm.description}
-          isActive={state.createMenuForm.isActive}
-          onTitleChange={actions.setNewMenuTitle}
-          onDescriptionChange={actions.setNewMenuDescription}
-          onActiveChange={actions.setNewMenuActive}
-          onCreate={actions.handleCreateMenu}
-          onClose={closeMenuModal}
-        />
-      ) : null}
     </section>
   );
 }

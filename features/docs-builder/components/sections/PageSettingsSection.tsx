@@ -1,6 +1,10 @@
 "use client";
 
 import { Field, inputClass } from "@/components/docs/builder/shared";
+import {
+  MenuGroupSelect,
+  type QuickMenuFormProps,
+} from "@/components/docs/builder/shared/MenuGroupSelect";
 
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
@@ -12,6 +16,7 @@ type PageSettingsSectionProps = {
   onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
 
   onUpdatePageSlug: (value: string) => void;
+  quickCreateMenu: QuickMenuFormProps;
 };
 
 export function PageSettingsSection({
@@ -19,9 +24,10 @@ export function PageSettingsSection({
   menuGroups,
   onUpdatePage,
   onUpdatePageSlug,
+  quickCreateMenu,
 }: PageSettingsSectionProps) {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5">
         <p className="text-sm font-medium text-slate-500">تعریف صفحه</p>
 
@@ -33,7 +39,7 @@ export function PageSettingsSection({
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="عنوان صفحه">
           <input
-            className={inputClass}
+            className={`${inputClass} !rounded-xl`}
             value={activePage.title}
             onChange={(e) =>
               onUpdatePage((page) => ({
@@ -46,34 +52,24 @@ export function PageSettingsSection({
 
         <Field label="Slug">
           <input
-            className={inputClass}
+            className={`${inputClass} !rounded-xl`}
             value={activePage.slug}
             onChange={(e) => onUpdatePageSlug(e.target.value)}
           />
         </Field>
 
-        <Field label="گروه منو">
-          <select
-            className={inputClass}
-            value={activePage.menuGroupId}
-            onChange={(e) =>
-              onUpdatePage((page) => ({
-                ...page,
-                menuGroupId: e.target.value,
-              }))
-            }
-          >
-            {menuGroups.map((group) => (
-              <option key={group.id} value={group.id}>
-                {group.title}
-              </option>
-            ))}
-          </select>
-        </Field>
+        <MenuGroupSelect
+          menuGroups={menuGroups}
+          value={activePage.menuGroupId}
+          onChange={(menuGroupId) =>
+            onUpdatePage((page) => ({ ...page, menuGroupId }))
+          }
+          quickCreate={quickCreateMenu}
+        />
 
         <Field label="عنوان در منو">
           <input
-            className={inputClass}
+            className={`${inputClass} !rounded-xl`}
             value={activePage.menuTitle}
             onChange={(e) =>
               onUpdatePage((page) => ({
@@ -87,7 +83,7 @@ export function PageSettingsSection({
 
       <Field label="توضیحات صفحه" className="mt-4">
         <textarea
-          className={`${inputClass} min-h-28`}
+          className={`${inputClass} min-h-28 !rounded-xl`}
           value={activePage.description ?? ""}
           onChange={(e) =>
             onUpdatePage((page) => ({

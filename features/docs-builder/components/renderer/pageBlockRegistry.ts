@@ -3,6 +3,7 @@ import { EndpointBlock } from "@/features/docs-builder/components/pageBuilderCom
 import { FieldGroupBlock } from "@/features/docs-builder/components/pageBuilderComponents/FieldGroupBlock";
 import { HeadingBlock } from "@/features/docs-builder/components/pageBuilderComponents/HeadingBlock";
 import { NoteBlock } from "@/features/docs-builder/components/pageBuilderComponents/NoteBlock";
+import { ImageBlock } from "@/features/docs-builder/components/pageBuilderComponents/ImageBlock";
 import { ParagraphBlock } from "@/features/docs-builder/components/pageBuilderComponents/ParagraphBlock";
 import { TableBlock } from "@/features/docs-builder/components/pageBuilderComponents/TableBlock";
 import type { PageBlockRegistry } from "@/features/docs-builder/types/types";
@@ -15,4 +16,5 @@ export const pageBlockRegistry: PageBlockRegistry = {
   "field-group": FieldGroupBlock,
   table: TableBlock,
   code: CodeBlock,
+  image: ImageBlock,
 };

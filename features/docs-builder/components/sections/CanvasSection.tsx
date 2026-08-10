@@ -62,11 +62,11 @@ export function CanvasSection({
       <div className="space-y-3">
         {activePage.components.map((component, index) => (
           <div key={component.id}>
-            <div
+            {/* <div
               className="h-3 border-dashed border"
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => onDropAt(e, index)}
-            />
+            /> */}
 
             <div
               draggable

@@ -73,12 +73,12 @@ function SelectedInspectorPanel({
 
       <div className="grid grid-cols-2 rounded-2xl  p-1">
         <InspectorTabButton
-          label="Properties"
+          label={selectedComponent.type === "image" ? "محتوا" : "Properties"}
           isActive={activeTab === "properties"}
           onClick={() => setActiveTab("properties")}
         />
         <InspectorTabButton
-          label="Data"
+          label={selectedComponent.type === "image" ? "تنظیمات ظاهر" : "Data"}
           isActive={activeTab === "data"}
           onClick={() => setActiveTab("data")}
         />

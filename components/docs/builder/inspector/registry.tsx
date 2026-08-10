@@ -7,6 +7,7 @@ import type {
   EndpointComponent,
   FieldGroupComponent,
   HeadingComponent,
+  ImageComponent,
   NoteComponent,
   ParagraphComponent,
   TableComponent,
@@ -16,6 +17,7 @@ import type {
   EndpointInspectorProps,
   FieldGroupInspectorProps,
   HeadingInspectorProps,
+  ImageInspectorProps,
   NoteInspectorProps,
   ParagraphInspectorProps,
   TableInspectorProps,
@@ -58,6 +60,10 @@ export const inspectorRegistry = {
     () => import("@/components/docs/builder/inspector/CodeInspector"),
     { loading: InspectorLoading },
   ),
+  image: dynamic<ImageInspectorProps>(
+    () => import("@/components/docs/builder/inspector/ImageInspector"),
+    { loading: InspectorLoading },
+  ),
 } as const;
 
 export type InspectorRegistry = {
@@ -68,6 +74,7 @@ export type InspectorRegistry = {
   "field-group": React.ComponentType<FieldGroupInspectorProps>;
   table: React.ComponentType<TableInspectorProps>;
   code: React.ComponentType<CodeInspectorProps>;
+  image: React.ComponentType<ImageInspectorProps>;
 };
 
 export type InspectorComponentMap = {
@@ -78,4 +85,5 @@ export type InspectorComponentMap = {
   "field-group": FieldGroupComponent;
   table: TableComponent;
   code: CodeComponent;
+  image: ImageComponent;
 };

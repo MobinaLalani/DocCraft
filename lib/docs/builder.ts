@@ -50,6 +50,11 @@ export const paletteBlocks: PaletteBlock[] = [
     label: "Code Example",
     description: "Request samples, response payloads, and SDK snippets.",
   },
+  {
+    type: "image",
+    label: "Image Upload",
+    description: "Upload an image and add alternative text or a caption.",
+  },
 
 ];
 
@@ -157,6 +162,21 @@ export function createComponent(type: PageComponentType): PageComponent {
         { code: 401, meaning: "Authentication failed." },
       ],
       emptyMessage: "No rows configured yet.",
+    };
+  }
+
+  if (type === "image") {
+    return {
+      id: buildId(type),
+      type,
+      src: "",
+      alt: "",
+      caption: "",
+      style: {
+        borderWidth: 1,
+        borderColor: "#e2e8f0",
+        borderRadius: 12,
+      },
     };
   }
 

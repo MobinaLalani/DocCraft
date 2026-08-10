@@ -22,6 +22,16 @@ export function EditorView() {
         menuGroups={state.workspace.menuGroups}
         onUpdatePage={actions.updateActivePage}
         onUpdatePageSlug={actions.updateActivePageSlug}
+        quickCreateMenu={{
+          title: state.createMenuForm.title,
+          description: state.createMenuForm.description,
+          isActive: state.createMenuForm.isActive,
+          onTitleChange: actions.setNewMenuTitle,
+          onDescriptionChange: actions.setNewMenuDescription,
+          onActiveChange: actions.setNewMenuActive,
+          onCreate: actions.handleCreateMenu,
+          onReset: actions.resetMenuForm,
+        }}
       />
 
       <CanvasSection
@@ -51,6 +61,7 @@ export function EditorView() {
       >
         ذخیره تغییرات
       </button>
+
     </div>
   );
 }

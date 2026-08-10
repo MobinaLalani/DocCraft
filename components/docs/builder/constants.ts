@@ -5,6 +5,7 @@ import {
   Braces,
   Heading1,
   Network,
+  ImageUp,
   Rows3,
   StickyNote,
   Table,
@@ -21,6 +22,7 @@ const blockTypeLabels: Record<PageComponentType, string> = {
   "field-group": "گروه فیلد",
   table: "جدول",
   code: "کد نمونه",
+  image: "آپلود تصویر",
 };
 
 const blockTypeIcons: Record<PageComponentType, LucideIcon> = {
@@ -31,6 +33,7 @@ const blockTypeIcons: Record<PageComponentType, LucideIcon> = {
   "field-group": Rows3,
   table: Table,
   code: Braces,
+  image: ImageUp,
 };
 
 export function getBlockTypeLabel(type: PageComponentType) {
@@ -66,6 +69,10 @@ export function getBlockLabel(component: PageComponent) {
     return component.title ?? "جدول";
   }
 
+  if (component.type === "image") {
+    return component.caption || component.alt || "تصویر";
+  }
+
   return component.title ?? "کد نمونه";
 }
 
@@ -94,6 +101,12 @@ export function getBlockMeta(component: PageComponent) {
     return `${component.columns.length} ستون`;
   }
 
+  if (component.type === "image") {
+    return component.width && component.height
+      ? `${component.width} × ${component.height}`
+      : "تصویر آپلودی";
+  }
+
   return component.language;
 }
 
@@ -106,6 +119,7 @@ export function translateBlockLabel(label: string) {
     "Field Group": blockTypeLabels["field-group"],
     Table: blockTypeLabels.table,
     "Code Example": blockTypeLabels.code,
+    "Image Upload": blockTypeLabels.image,
   };
 
   return labels[label] ?? label;
@@ -120,6 +134,7 @@ export function translateBlockDescription(type: PageComponentType) {
     "field-group": "برای query، headers، body و response fields",
     table: "برای status code ها و جدول داده ها",
     code: "برای نمونه request و response",
+    image: "برای آپلود و نمایش تصویر در صفحه",
   };
 
   return descriptions[type];
