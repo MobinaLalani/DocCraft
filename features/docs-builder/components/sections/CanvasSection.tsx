@@ -2,6 +2,7 @@
 
 import { useState, type DragEvent } from "react";
 import { Copy, GripVertical, Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { PageRenderer } from "@/features/docs-builder/components/renderer/PageRenderer";
 
@@ -38,6 +39,7 @@ export function CanvasSection({
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [draggingComponentId, setDraggingComponentId] = useState<string | null>(null);
   const [activeDropIndex, setActiveDropIndex] = useState<number | null>(null);
+  const [lastReorderIndex, setLastReorderIndex] = useState<number | null>(null);
 
   const handleDrop = (event: DragEvent<HTMLDivElement>, index: number) => {
     event.preventDefault();
@@ -45,6 +47,21 @@ export function CanvasSection({
     onDropAt(event, index);
     setDraggingComponentId(null);
     setActiveDropIndex(null);
+    setLastReorderIndex(null);
+  };
+
+  const handleDragOverZone = (
+    event: DragEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = draggingComponentId ? "move" : "copy";
+    setActiveDropIndex(index);
+
+    if (draggingComponentId && lastReorderIndex !== index) {
+      onDropAt(event, index);
+      setLastReorderIndex(index);
+    }
   };
 
   const renderDropZone = (index: number) => (
@@ -52,14 +69,9 @@ export function CanvasSection({
       key={`drop-zone-${index}`}
       className="flex h-5 items-center py-2"
       onDragEnter={(event) => {
-        event.preventDefault();
-        setActiveDropIndex(index);
+        handleDragOverZone(event, index);
       }}
-      onDragOver={(event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = "move";
-        setActiveDropIndex(index);
-      }}
+      onDragOver={(event) => handleDragOverZone(event, index)}
       onDrop={(event) => handleDrop(event, index)}
     >
       <div
@@ -117,17 +129,23 @@ export function CanvasSection({
         ) : null}
         {activePage.components.length > 0 ? renderDropZone(0) : null}
         {activePage.components.map((component, index) => (
-          <div key={component.id}>
+          <motion.div
+            key={component.id}
+            layout="position"
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
+          >
             <div
               draggable
               onDragStart={(event) => {
                 event.dataTransfer.effectAllowed = "move";
                 event.dataTransfer.setData(componentTransferKey, component.id);
                 setDraggingComponentId(component.id);
+                setLastReorderIndex(index);
               }}
               onDragEnd={() => {
                 setDraggingComponentId(null);
                 setActiveDropIndex(null);
+                setLastReorderIndex(null);
               }}
               onClick={() => onSelectComponent(component.id)}
               className={`
@@ -180,7 +198,7 @@ ${draggingComponentId === component.id ? "opacity-40" : "opacity-100"}
               </div>
             </div>
             {renderDropZone(index + 1)}
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
